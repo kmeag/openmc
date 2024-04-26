@@ -296,7 +296,7 @@ class Universe(UniverseBase):
         1.05, 1), 'loc': 2, 'borderaxespad': 0.0}
 
     def plot(self, origin=None, width=None, pixels=40000,
-             basis='xy', color_by='cell', colors=None, seed=None,
+             basis='xy', color_by=('cell', None), seed=None,
              openmc_exec='openmc', axes=None, legend=False, axis_units='cm',
              legend_kwargs=_default_legend_kwargs, outline=False,
              **kwargs):
@@ -321,9 +321,9 @@ class Universe(UniverseBase):
             the image aspect ratio.
         basis : {'xy', 'xz', 'yz'}
             The basis directions for the plot
-        color_by : {'cell', 'material'}
+        color_by : ({'cell', 'material'}, colors: dict)
             Indicate whether the plot should be colored by cell or by material
-        colors : dict
+
             Assigns colors to specific materials or cells. Keys are instances of
             :class:`Cell` or :class:`Material` and values are RGB 3-tuples, RGBA
             4-tuples, or strings indicating SVG color names. Red, green, blue,
@@ -334,6 +334,7 @@ class Universe(UniverseBase):
                # Make water blue
                water = openmc.Cell(fill=h2o)
                universe.plot(..., colors={water: (0., 0., 1.))
+
         seed : int
             Seed for the random number generator
         openmc_exec : str
@@ -433,9 +434,8 @@ class Universe(UniverseBase):
             plot.width = width
             plot.pixels = pixels
             plot.basis = basis
-            plot.color_by = color_by
-            if colors is not None:
-                plot.colors = colors
+            plot.color_by = color_by[0]
+            plot.colors = color_by[1]
             model.plots.append(plot)
 
             # Run OpenMC in geometry plotting mode
